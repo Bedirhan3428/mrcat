@@ -40,7 +40,7 @@ const SignupLogin = () => {
             const snapshot = await get(kullaniciRef);
             if (snapshot.exists()) {
                 setKullaniciAdiAlindi(true);
-                navigate('/home', { state: { uid: uid } });
+                navigate('/', { state: { uid: uid } });
             }
         } catch (error) {
             toast.error('Kullanıcı adı kontrol hatası');
@@ -87,7 +87,7 @@ const SignupLogin = () => {
                 email: auth.currentUser.email,
             });
             setKullaniciAdiAlindi(true);
-            navigate('/home', { state: { uid: userID } });
+            navigate('/', { state: { uid: userID } });
             toast.success('Kullanıcı verileri kaydedildi.');
         } catch (error) {
             toast.error('Kullanıcı adı kaydetme hatası');
@@ -164,7 +164,7 @@ const SignupLogin = () => {
 
                 if (user.emailVerified) {
                     setUserID(user.uid);
-                    navigate('/home', { state: { uid: user.uid } });
+                    navigate('/', { state: { uid: user.uid } });
                     toast.success('Giriş başarılı!');
                 } else {
                     setHataMesaji('Lütfen e-posta adresinizi doğrulayın.');
