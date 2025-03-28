@@ -22,7 +22,13 @@ function Home() {
     const [aramaKelimesi, setAramaKelimesi] = useState('');
     const [toplamBakiye, setToplamBakiye] = useState(0); // Toplam bakiye için state
 
+    useEffect(() => {
+    const timer = setTimeout(() => {
+        navigate('/singup');
+    }, 1000);
 
+    
+}, []);
     const navigates = () => {
         navigate('/singup');
     };
