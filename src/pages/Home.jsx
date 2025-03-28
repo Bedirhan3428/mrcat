@@ -28,7 +28,9 @@ function Home() {
     }, 1000);
 
     
-}, []);
+}, [uid]);
+
+    
     const navigates = () => {
         navigate('/singup');
     };
