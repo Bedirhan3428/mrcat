@@ -21,10 +21,25 @@ function Home() {
     const [cinsiyetFiltresi, setCinsiyetFiltresi] = useState(null);
     const [aramaKelimesi, setAramaKelimesi] = useState('');
     const [toplamBakiye, setToplamBakiye] = useState(0); // Toplam bakiye için state
+    const [yeniAdBilgileri, setYeniAdBilgileri] = useState({});
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [result, setResult] = useState(null);
 
     const navigates = () => {
         navigate('/singup');
     };
+
+    const errorsifir = ()=>{
+        console.log('İptal Edildi')
+        setShowConfirm(false)
+    }
+    
+     
+
+
+
+
+
 
     useEffect(() => {
         if (uid === 'pOX1Lx7ocKfY3WvvQO2Z8iCCIR32') {
@@ -54,7 +69,6 @@ function Home() {
                     ...data[uid],
                 }));
                 setKullanicilar(kullaniciListesi);
-                // Toplam bakiyeyi hesapla
                 const toplam = kullaniciListesi.reduce((acc, kullanici) => acc + (kullanici.bakiye || 0), 0);
                 setToplamBakiye(toplam);
             } else {
@@ -68,6 +82,35 @@ function Home() {
         setEkBilgiler({ ...ekBilgiler, [uid]: value });
     };
 
+    const handleYeniAdInputChange = (uid, value) => {
+        setYeniAdBilgileri({ ...yeniAdBilgileri, [uid]: value });
+    };
+
+    const kullaniciAdiGuncelle = (guncellenecekUid) => {
+        const db = getDatabase();
+        const yeniAd = yeniAdBilgileri[guncellenecekUid];
+
+        if (!yeniAd || yeniAd.trim() === '') {
+            alert("Lütfen geçerli bir kullanıcı adı girin.");
+            return;
+        }
+
+        const kullaniciRef = ref(db, `kullanicilar/${guncellenecekUid}`);
+
+        update(kullaniciRef, {
+            userName: yeniAd,
+        })
+            .then(() => {
+                console.log("Kullanıcı adı başarıyla güncellendi.");
+                veriCekKullanicilar();
+                // Clear the input after successful update
+                setYeniAdBilgileri({ ...yeniAdBilgileri, [guncellenecekUid]: '' });
+            })
+            .catch((error) => {
+                console.error("Kullanıcı adı güncelleme hatası:", error);
+            });
+    };
+
     const cikisYap = async () => {
         try {
             await signOut(auth);
@@ -78,6 +121,7 @@ function Home() {
             console.error("Çıkış hatası:", error);
         }
     };
+
 
     const veriCek = () => {
         const db = getDatabase();
@@ -130,10 +174,24 @@ function Home() {
             });
     };
 
+
+
+
+
+
+
+
     const sifirlaTumBakiyeler = () => {
+        setShowConfirm(false)
+
+        
         const db = getDatabase();
         kullanicilar.forEach(kullanici => {
+<<<<<<< HEAD
+            if (kullanici.uid !== 'Cit2efgEJmRceeZEFl3hSr60W963') {
+=======
             if (kullanici.uid !== 'pOX1Lx7ocKfY3WvvQO2Z8iCCIR32') {
+>>>>>>> 769d45c083e471fb24082ff16704650f8be5a00a
                 const kullaniciRef = ref(db, `kullanicilar/${kullanici.uid}`);
                 update(kullaniciRef, { bakiye: 0 })
                     .then(() => console.log(`${kullanici.userName} bakiyesi sıfırlandı.`))
@@ -158,6 +216,14 @@ function Home() {
 
     return (
         <div>
+            {showConfirm && (
+        <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', border: '1px solid #ccc' }}>
+          <p>Are you sure?</p>
+          <button onClick={sifirlaTumBakiyeler}>OK</button>
+          <button onClick={errorsifir}>Cancel</button>
+        </div>
+      )}
+      {result && <p>{result}</p>}
             {user && (
                 <div>
                     <header className='header'>
@@ -189,10 +255,10 @@ function Home() {
                         <button className='erkek' onClick={() => filtreleCinsiyet('erkek')}>Erkekler</button>
                         <button className='kadin' onClick={() => filtreleCinsiyet('kadin')}>Kadınlar</button>
                         <button className='tumu' onClick={() => setCinsiyetFiltresi(null)}>Tümü</button>
-                        <button className='delete' onClick={sifirlaTumBakiyeler}>Tümünü Sıfırla</button>
+                        <button className='delete' onClick={()=>{setShowConfirm(true)}}>Tümünü Sıfırla</button>
                     </div>
                     {filtrelenmisKullanicilar.map((kullanici) => {
-                        if (kullanici.uid !== 'lHo8dShDB8Tt3ZiUd8vsEUT1uC33') {
+                        if (kullanici.uid !== 'Cit2efgEJmRceeZEFl3hSr60W963') {
                             return (
                                 <div className='userinf' key={kullanici.uid}>
                                     <p className='name'>Ad: {kullanici.userName}</p>
@@ -206,6 +272,15 @@ function Home() {
                                     />
                                     <button className='ekle' onClick={() => bakiyeGuncelle(kullanici.uid, kullanici.bakiye)}>Ekle</button>
                                     <button className='azalt' onClick={() => bakiyeGuncelle(kullanici.uid, kullanici.bakiye, true)}>Azalt</button>
+
+                                    <input
+                                        className='bakiyedegis'
+                                        type="text"
+                                        placeholder="Yeni Kullanıcı Adı"
+                                        value={yeniAdBilgileri[kullanici.uid] || ""}
+                                        onChange={(e) => handleYeniAdInputChange(kullanici.uid, e.target.value)}
+                                    />
+                                    <button className='tumu' onClick={() => kullaniciAdiGuncelle(kullanici.uid)}>Adı Güncelle</button>
                                 </div>
                             );
                         }
