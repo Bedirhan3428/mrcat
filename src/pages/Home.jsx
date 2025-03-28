@@ -26,7 +26,7 @@ function Home() {
 
     
     const navigates = () => {
-        navigate('/singup');
+        navigate('/');
     };
 
     useEffect(() => {
@@ -76,7 +76,7 @@ function Home() {
             await signOut(auth);
             setCevir(true);
             setCevir1(false);
-            navigate('/singup');
+            navigate('/');
         } catch (error) {
             console.error("Çıkış hatası:", error);
         }
