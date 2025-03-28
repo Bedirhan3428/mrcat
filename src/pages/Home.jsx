@@ -22,11 +22,8 @@ function Home() {
     const [aramaKelimesi, setAramaKelimesi] = useState('');
     const [toplamBakiye, setToplamBakiye] = useState(0); // Toplam bakiye için state
 
- 
-
-    
     const navigates = () => {
-        navigate('/');
+        navigate('/singup');
     };
 
     useEffect(() => {
@@ -76,7 +73,7 @@ function Home() {
             await signOut(auth);
             setCevir(true);
             setCevir1(false);
-            navigate('/');
+            navigate('/singup');
         } catch (error) {
             console.error("Çıkış hatası:", error);
         }
