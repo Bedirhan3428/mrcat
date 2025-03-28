@@ -27,7 +27,7 @@ function Home() {
     };
 
     useEffect(() => {
-        if (uid === 'pOX1Lx7ocKfY3WvvQO2Z8iCCIR32') {
+        if (uid === 'S3qr9yBGiTfMEMSKx7T4CgSlxrO2') {
             setAdmin(true);
             setUser(false);
         }
@@ -133,7 +133,7 @@ function Home() {
     const sifirlaTumBakiyeler = () => {
         const db = getDatabase();
         kullanicilar.forEach(kullanici => {
-            if (kullanici.uid !== 'pOX1Lx7ocKfY3WvvQO2Z8iCCIR32') {
+            if (kullanici.uid !== 'S3qr9yBGiTfMEMSKx7T4CgSlxrO2') {
                 const kullaniciRef = ref(db, `kullanicilar/${kullanici.uid}`);
                 update(kullaniciRef, { bakiye: 0 })
                     .then(() => console.log(`${kullanici.userName} bakiyesi sıfırlandı.`))
