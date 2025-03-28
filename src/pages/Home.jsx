@@ -23,11 +23,6 @@ function Home() {
     const [toplamBakiye, setToplamBakiye] = useState(0); // Toplam bakiye için state
 
 
-
-     useEffect(() => {
-       navigate('/singup')
-    }, []);
-
     const navigates = () => {
         navigate('/singup');
     };
