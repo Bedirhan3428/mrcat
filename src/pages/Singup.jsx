@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { auth, googleProvider } from '../FirebaseConfig';
-import {
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signInWithPopup,
-    sendEmailVerification
+import { 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    signInWithPopup, 
+    sendEmailVerification 
 } from "firebase/auth";
 import { getDatabase, ref, set, get } from "firebase/database";
 import { useNavigate } from 'react-router-dom';
@@ -40,7 +40,7 @@ const SignupLogin = () => {
             const snapshot = await get(kullaniciRef);
             if (snapshot.exists()) {
                 setKullaniciAdiAlindi(true);
-                navigate('/sginup', { state: { uid: uid } });
+                navigate('/', { state: { uid: uid } });
             }
         } catch (error) {
             toast.error('Kullanıcı adı kontrol hatası');
@@ -87,7 +87,7 @@ const SignupLogin = () => {
                 email: auth.currentUser.email,
             });
             setKullaniciAdiAlindi(true);
-            navigate('/sginup', { state: { uid: userID } });
+            navigate('/', { state: { uid: userID } });
             toast.success('Kullanıcı verileri kaydedildi.');
         } catch (error) {
             toast.error('Kullanıcı adı kaydetme hatası');
@@ -112,7 +112,7 @@ const SignupLogin = () => {
         setHataMesaji('');
         setIsLoading(true);
 
-        // Girişleri doğrula
+        // Validate inputs
         if (isSignup) {
             const validationError = kullaniciAdiKontrolu(userName);
             if (validationError) {
@@ -128,7 +128,7 @@ const SignupLogin = () => {
             }
         }
 
-        // Şifre doğrulama
+        // Password validation
         if (password.length < 6) {
             setHataMesaji('Şifre en az 6 karakter olmalıdır.');
             setIsLoading(false);
@@ -151,16 +151,20 @@ const SignupLogin = () => {
 
                 await sendEmailVerification(user);
                 toast.success('Kayıt başarılı! Lütfen e-postanızı doğruladıktan sonra giriş yapın.');
-                navigate('/sginup', { state: { uid: user.uid } });
 
-            } else {
+
+            } 
+            
+            
+            
+            else {
                 // Giriş işlemi
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
                 if (user.emailVerified) {
                     setUserID(user.uid);
-                    navigate('/sginup', { state: { uid: user.uid } });
+                    navigate('/', { state: { uid: user.uid } });
                     toast.success('Giriş başarılı!');
                 } else {
                     setHataMesaji('Lütfen e-posta adresinizi doğrulayın.');
@@ -190,7 +194,7 @@ const SignupLogin = () => {
             setIsLoading(false);
         }
     };
-    
+
     return (
         <div className='form-container'>
             <div className='form'>
