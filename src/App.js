@@ -13,7 +13,7 @@ function App() {
     <div className="App">
       <Routes>
       <Route path='/' element={<Signup />}/>
-      <Route path='/singup' element={<Home />}/>
+      <Route path='/home' element={<Home />}/>
       </Routes>
       <div>
       {/* Uygulamanızın diğer bileşenleri */}
