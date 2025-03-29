@@ -42,7 +42,11 @@ function Home() {
 
 
     useEffect(() => {
+<<<<<<< HEAD
         if (uid === 'Wt504b8vvsMVgHEUUo52NKWO4AE3') {
+=======
+        if (uid === 'Cit2efgEJmRceeZEFl3hSr60W963') {
+>>>>>>> 19740c9 (değişiklik açıklaması)
             setAdmin(true);
             setUser(false);
         }
@@ -187,7 +191,11 @@ function Home() {
         
         const db = getDatabase();
         kullanicilar.forEach(kullanici => {
+<<<<<<< HEAD
             if (kullanici.uid !== 'Wt504b8vvsMVgHEUUo52NKWO4AE3') {
+=======
+            if (kullanici.uid !== 'Cit2efgEJmRceeZEFl3hSr60W963') {
+>>>>>>> 19740c9 (değişiklik açıklaması)
                 const kullaniciRef = ref(db, `kullanicilar/${kullanici.uid}`);
                 update(kullaniciRef, { bakiye: 0 })
                     .then(() => console.log(`${kullanici.userName} bakiyesi sıfırlandı.`))
@@ -254,7 +262,11 @@ function Home() {
                         <button className='delete' onClick={()=>{setShowConfirm(true)}}>Tümünü Sıfırla</button>
                     </div>
                     {filtrelenmisKullanicilar.map((kullanici) => {
+<<<<<<< HEAD
                         if (kullanici.uid !== 'Wt504b8vvsMVgHEUUo52NKWO4AE3') {
+=======
+                        if (kullanici.uid !== 'Cit2efgEJmRceeZEFl3hSr60W963') {
+>>>>>>> 19740c9 (değişiklik açıklaması)
                             return (
                                 <div className='userinf' key={kullanici.uid}>
                                     <p className='name'>Ad: {kullanici.userName}</p>
