@@ -4,6 +4,7 @@ import { getDatabase, ref, get, onValue, update } from "firebase/database";
 import { auth, signOut } from '../FirebaseConfig';
 import '../css/home.css';
 import '../css/admin.css';
+import '../market.png';
 
 function Home() {
     const navigate = useNavigate();
@@ -24,6 +25,8 @@ function Home() {
     const [yeniAdBilgileri, setYeniAdBilgileri] = useState({});
     const [showConfirm, setShowConfirm] = useState(false);
     const [result, setResult] = useState(null);
+    const [mrket, setMrket] = useState(true)
+    const [a123, setA123] = useState('')
 
     const navigates = () => {
         navigate('/singup');
@@ -31,7 +34,19 @@ function Home() {
 
     const errorsifir = ()=>{
         console.log('İptal Edildi')
+        setA123('')
         setShowConfirm(false)
+    }
+
+    const errorsifiryes = ()=>{
+        setA123('')
+
+
+        if (a123 == 'A123B123C123') {
+            sifirlaTumBakiyeler();
+        }
+        
+
     }
     
      
@@ -40,13 +55,9 @@ function Home() {
 
 
 
-
+//userid
     useEffect(() => {
-<<<<<<< HEAD
-        if (uid === 'Wt504b8vvsMVgHEUUo52NKWO4AE3') {
-=======
         if (uid === 'Cit2efgEJmRceeZEFl3hSr60W963') {
->>>>>>> 19740c9 (değişiklik açıklaması)
             setAdmin(true);
             setUser(false);
         }
@@ -188,14 +199,10 @@ function Home() {
     const sifirlaTumBakiyeler = () => {
         setShowConfirm(false)
 
-        
+        //userid
         const db = getDatabase();
         kullanicilar.forEach(kullanici => {
-<<<<<<< HEAD
-            if (kullanici.uid !== 'Wt504b8vvsMVgHEUUo52NKWO4AE3') {
-=======
             if (kullanici.uid !== 'Cit2efgEJmRceeZEFl3hSr60W963') {
->>>>>>> 19740c9 (değişiklik açıklaması)
                 const kullaniciRef = ref(db, `kullanicilar/${kullanici.uid}`);
                 update(kullaniciRef, { bakiye: 0 })
                     .then(() => console.log(`${kullanici.userName} bakiyesi sıfırlandı.`))
@@ -221,23 +228,30 @@ function Home() {
     return (
         <div>
             {showConfirm && (
-        <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', border: '1px solid #ccc' }}>
-          <p>Are you sure?</p>
-          <button onClick={sifirlaTumBakiyeler}>OK</button>
-          <button onClick={errorsifir}>Cancel</button>
+        <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '50px', border: '1px solid #ccc' , borderRadius:'5px', backgroundColor:'aliceblue'}}>
+          <p>Tümü sıfırlansın mı?</p>
+          <p>Girin: A123B123C123</p>
+        <input type="text" value={a123} onChange={(e) => setA123(e.target.value)} placeholder='A123B123C123' style={{border:'1px solid' , borderRadius:'2px'}}/>
+           <br />
+           <br />
+          <button className='ekle' onClick={errorsifiryes}>Evet</button>
+          <button className='azalt' onClick={errorsifir}>Hayır</button>
+          
+         
+
         </div>
       )}
       {result && <p>{result}</p>}
             {user && (
                 <div>
                     <header className='header'>
-                        <h1 className='logo'>Mr.Ket</h1>
+                        <img src={require('../market.png')} alt="Market Logo" className="market-logo" />
                         {cevir1 && <p>Merhaba ! {uN}</p>}
                         {cevir && <button className='Giriş' onClick={navigates}>Girş/Kaydol</button>}
                         {cevir1 && <button className='Giriş' onClick={cikisYap}>Çıkış yap</button>}
                     </header>
                     <div>
-                      {cevir1 &&  <h1>Ödenecek Tutar : {tutar}</h1>}
+                      {cevir1 &&  <h1>Ödenecek Tutar : {tutar}₺</h1>}
                     </div>
                 </div>
             )}
@@ -246,6 +260,7 @@ function Home() {
                 <div>
                     <header className='header'>
                         <h1 className='logo'>Mr.Ket - Admin Paneli</h1>
+                        <img  src={require('../market.png')} alt="Market Logo" className="market-logo" />
                         <button className='Giriş' onClick={cikisYap}>Çıkış yap</button>
                     </header>
                     <div className='buttonlar'>
@@ -262,11 +277,8 @@ function Home() {
                         <button className='delete' onClick={()=>{setShowConfirm(true)}}>Tümünü Sıfırla</button>
                     </div>
                     {filtrelenmisKullanicilar.map((kullanici) => {
-<<<<<<< HEAD
-                        if (kullanici.uid !== 'Wt504b8vvsMVgHEUUo52NKWO4AE3') {
-=======
+                        //userid
                         if (kullanici.uid !== 'Cit2efgEJmRceeZEFl3hSr60W963') {
->>>>>>> 19740c9 (değişiklik açıklaması)
                             return (
                                 <div className='userinf' key={kullanici.uid}>
                                     <p className='name'>Ad: {kullanici.userName}</p>
