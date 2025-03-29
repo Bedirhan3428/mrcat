@@ -4,7 +4,11 @@ import { getDatabase, ref, get, onValue, update } from "firebase/database";
 import { auth, signOut } from '../FirebaseConfig';
 import '../css/home.css';
 import '../css/admin.css';
+<<<<<<< HEAD
 import '../market.png';
+=======
+import '../image/market.png';
+>>>>>>> 960034364599d03758670b231853c3f3546906bd
 
 function Home() {
     const navigate = useNavigate();
@@ -245,7 +249,11 @@ function Home() {
             {user && (
                 <div>
                     <header className='header'>
+<<<<<<< HEAD
                         <img src={require('../market.png')} alt="Market Logo" className="market-logo" />
+=======
+                        <img src={require('../image/market.png')} alt="Market Logo" className="market-logo" />
+>>>>>>> 960034364599d03758670b231853c3f3546906bd
                         {cevir1 && <p>Merhaba ! {uN}</p>}
                         {cevir && <button className='Giriş' onClick={navigates}>Girş/Kaydol</button>}
                         {cevir1 && <button className='Giriş' onClick={cikisYap}>Çıkış yap</button>}
@@ -260,7 +268,11 @@ function Home() {
                 <div>
                     <header className='header'>
                         <h1 className='logo'>Mr.Ket - Admin Paneli</h1>
+<<<<<<< HEAD
                         <img  src={require('../market.png')} alt="Market Logo" className="market-logo" />
+=======
+                        <img src={require('../image/market.png')} alt="Market Logo" className="market-logo" />
+>>>>>>> 960034364599d03758670b231853c3f3546906bd
                         <button className='Giriş' onClick={cikisYap}>Çıkış yap</button>
                     </header>
                     <div className='buttonlar'>
