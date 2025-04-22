@@ -14,7 +14,7 @@ function Admin() {
   const [employees, setEmployees] = useState([]);
   const [bakiyeModalAcik, setBakiyeModalAcik] = useState(false);
   const [secilenCalisanId, setSecilenCalisanId] = useState(null);
-  const [yeniBakiye, setYeniBakiye] = useState(0);
+  const [yeniBakiye, setYeniBakiye] = useState('');
 
   useEffect(() => {
     const auth = getAuth();
@@ -155,7 +155,7 @@ function Admin() {
     const yeni = islem === 'ekle' ? mevcut + miktar : Math.max(mevcut - miktar, 0);
     await update(calisanRef, { bakiye: yeni });
     setBakiyeModalAcik(false);
-    setYeniBakiye('')
+    
     
     fetchEmployees(selectedShop.id);
   };
