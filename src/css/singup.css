@@ -1,0 +1,114 @@
+/* Güncellenmiş ve daha büyük App.css dosyası */
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.signup-form {
+  background-color: #fff;
+  padding: 36px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  width: 450px; /* Genişlik artırıldı */
+}
+
+.signup-input, .signup-select {
+  width: 90%;
+  padding: 16px 20px; /* Daha büyük iç boşluk */
+  margin-bottom: 20px; /* Daha büyük dış boşluk */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 17px; /* Font boyutu artırıldı */
+  transition: border-color 0.2s;
+}
+
+.signup-input:focus, .signup-select:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+.signup-button {
+  width: 100%;
+  background-color: #4a90e2;
+  color: white;
+  padding: 16px 0; /* Buton yüksekliği artırıldı */
+  border: none;
+  border-radius: 8px;
+  font-size: 18px; /* Font boyutu artırıldı */
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.signup-button:hover {
+  background-color: #3a7bc8;
+}
+
+.google-button {
+  width: 100%;
+  background-color: #fff;
+  color: #5f6368;
+  padding: 16px 0; /* Buton yüksekliği artırıldı */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 23px; /* Font boyutu artırıldı */
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+  transition: background-color 0.2s;
+}
+
+.google-button:hover {
+  background-color: #f5f5f5;
+}
+
+/* Google ikonu için yer ayırıcı (isteğe bağlı) */
+.google-button::before {
+  content: "";
+  display: inline-block;
+  width: 22px; /* İkon boyutu artırıldı */
+  height: 22px;
+  
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.giriskayit{
+  color: #4a90e2;
+  text-decoration: underline  solid #4a90e2;
+
+}
+
+.team-button {
+  margin-top: 15px;
+  width: 100%;
+  background-color: #b5e0b7; /* Daha canlı bir yeşil */
+  color: rgb(247, 247, 247);
+  padding: 18px 0; /* Biraz daha yükseklik */
+  border: none;
+  border-radius: 10px; /* Daha yuvarlak köşeler */
+  font-size: 20px; /* Biraz daha büyük font */
+  font-weight: 600; /* Daha belirgin kalınlık */
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Hafif gölge */
+  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.team-button:hover {
+  background-color: #4CAF50; /* Hover efekti için daha koyu yeşil */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Daha belirgin gölge */
+}
+
+.team-button:active {
+  background-color: #388E3C; /* Tıklama efekti için daha da koyu yeşil */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Daha az gölge */
+}

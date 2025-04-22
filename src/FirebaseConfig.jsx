@@ -1,21 +1,24 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signOut, GoogleAuthProvider  } from "firebase/auth"; // v9 için doğru içe aktarma
-import { getDatabase } from "firebase/database";
-
+import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth"; 
+import { getDatabase, ref } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAnEP9D0xdKB43UehhCLqpOjaEXUbKgh8E",
-  authDomain: "mrket-6cde9.firebaseapp.com",
-  databaseURL: "https://mrket-6cde9-default-rtdb.firebaseio.com",
-  projectId: "mrket-6cde9",
-  storageBucket: "mrket-6cde9.firebasestorage.app",
-  messagingSenderId: "100139465353",
-  appId: "1:100139465353:web:9b438421b1e6fdcfcb2458",
+  apiKey: "AIzaSyDSu8gOBilxDtWRT53m-gqGCt-r1XCpjDw",
+  authDomain: "mrket-62a33.firebaseapp.com",
+  projectId: "mrket-62a33",
+  storageBucket: "mrket-62a33.firebasestorage.app",
+  messagingSenderId: "159670150710",
+  appId: "1:159670150710:web:fdcd389e19101667339a97",
+  measurementId: "G-CF05T2VQSP"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app); // v9 için doğru getAuth kullanımı
-const database = getDatabase(app);
-const googleProvider = new GoogleAuthProvider();
 
-export { app, auth, database, googleProvider, signOut };
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const auth = getAuth(app); // Auth nesnesini oluşturun
+const database = getDatabase(app);
+const mesajlarRef = ref(database, 'mesajlar');
+
+export { auth , app , analytics, database, mesajlarRef };
+  

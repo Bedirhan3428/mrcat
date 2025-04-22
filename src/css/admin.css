@@ -1,80 +1,94 @@
-.searchUser{
-   width: 350px;
-   height: 30px;
-   border-radius: 5px;
-   border: 1px, solid ;
-
-   
-   
+/* Modern form styling */
+.metin-alani, 
+.sayi-alani, 
+.diger-metin-alani, 
+.eposta-alani, 
+.parola-alani {
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 16px;
+    background-color: #f5f5f7;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-.buttonlar{
-    margin-top: 20px;
-    display: flex;
-    flex-direction: row;
-     
-    justify-content: center;
+.metin-alani:focus, 
+.sayi-alani:focus, 
+.diger-metin-alani:focus, 
+.eposta-alani:focus, 
+.parola-alani:focus {
+    outline: none;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
 }
 
-.erkek{
-    margin-left: 10px;
-}
-
-.kadin{
-    margin-left: 10px;
-}
-
-.tumu{
-    margin-left: 10px;
-}
-
-
-
-
-
-
-.delete{
-    margin-left: 50px;
-    border-radius: 5px;
-    border: 2px, solid,black;
-    background-color: red;
+.onay-butonu {
+    background-color: #4361ee;
     color: white;
-
+    padding: 14px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(67, 97, 238, 0.2);
 }
 
-.delete:hover{
-   color: black;
-   background-color: chartreuse;
-
+.onay-butonu:hover {
+    background-color: #3a56d4;
+    box-shadow: 0 6px 8px rgba(67, 97, 238, 0.3);
+    transform: translateY(-2px);
 }
 
-.userinf{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    background-color: rgb(252, 245, 237);
-    margin-top: 20px;
-    height: 100px;
-    font-size: 20px;
+.onay-butonu:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(67, 97, 238, 0.2);
 }
 
-.bakiyedegis{
-   height: 30px;
-   border-radius: 5px;
-   border: 1px, solid;
+/* Form container if needed */
+.form-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 24px;
 }
 
-.ekle{
-    width: 90px;
-    height: 30px;
-    border-radius: 5px;
-    border: 1px,solid;
+
+.button{
+    padding: 10px 20px;
+    border-radius: 7px;
+    border-bottom: 2px solid;
+    border-top: none ;
+   background-color: rgb(247, 227, 197);
+    border-right: none;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #333;
+    border-left: 2px solid #333;
+    
+    
+}
+.button:hover{
+    background-color: #f5baba;
+    cursor: pointer;
 }
 
-.azalt{
-    width: 90px;
-    height: 30px;
-    border-radius: 5px;
-    border: 1px,solid;
+.button:active{
+   border-bottom: none;
+   border-left: none;
+  transition: all 0.1s ease-in-out;
+   
+   box-shadow: 5 5px 5px rgba(0, 0, 0, 0.1);
 }
+
+
+
+
+
+ 

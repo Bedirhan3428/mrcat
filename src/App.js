@@ -5,6 +5,9 @@ import Home from './pages/Home';
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer, toast, configure } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import NotFoundPage from './pages/NotFoundPage';
+import CreateTeam from './pages/CreateTeam';
+import Admin from './pages/Admin';
 
 
 function App() {
@@ -13,7 +16,13 @@ function App() {
     <div className="App">
       <Routes>
       <Route path='/' element={<Home />}/>
+      <Route path='/home/:id' element={<Home />}/>
       <Route path='/singup' element={<Signup />}/>
+      <Route path='/create-team' element={<CreateTeam />}/>
+      <Route path='/admin' element={<Admin />}/>
+
+      <Route path='*' element={<NotFoundPage />}/>
+     
       </Routes>
       <div>
       {/* Uygulamanızın diğer bileşenleri */}

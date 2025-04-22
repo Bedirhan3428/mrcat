@@ -1,318 +1,200 @@
-import React, { useState, useEffect } from 'react';
-import { auth, googleProvider } from '../FirebaseConfig';
-import { 
-    createUserWithEmailAndPassword, 
-    signInWithEmailAndPassword, 
-    signInWithPopup, 
-    sendEmailVerification 
-} from "firebase/auth";
-import { getDatabase, ref, set, get } from "firebase/database";
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import '../css/sginup.css';
-
-const SignupLogin = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [userName, setUserName] = useState('');
-    const [cinsiyet, setCinsiyet] = useState('');
-    const [isSignup, setIsSignup] = useState(true);
-    const [userID, setUserID] = useState('');
-    const [gmailGirisYapildi, setGmailGirisYapildi] = useState(false);
-    const [kullaniciAdiAlindi, setKullaniciAdiAlindi] = useState(false);
-    const [hataMesaji, setHataMesaji] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-
-    const db = getDatabase();
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        const mevcutKullanici = auth.currentUser;
-        if (mevcutKullanici) {
-            setUserID(mevcutKullanici.uid);
-            kontrolKullaniciAdi(mevcutKullanici.uid);
-        }
-    }, []);
-
-    const kontrolKullaniciAdi = async (uid) => {
-        try {
-            const kullaniciRef = ref(db, `kullanicilar/${uid}/userName`);
-            const snapshot = await get(kullaniciRef);
-            if (snapshot.exists()) {
-                setKullaniciAdiAlindi(true);
-                navigate('/', { state: { uid: uid } });
-            }
-        } catch (error) {
-            toast.error('Kullanıcı adı kontrol hatası');
-            console.error('Kullanıcı adı kontrol hatası:', error);
-        }
-    };
-
-    const handleGmailGiris = async () => {
-        setIsLoading(true);
-        try {
-            const result = await signInWithPopup(auth, googleProvider);
-            const user = result.user;
-            setUserID(user.uid);
-            setGmailGirisYapildi(true);
-            await kontrolKullaniciAdi(user.uid);
-            toast.success('Giriş başarılı!');
-        } catch (error) {
-            toast.error('Gmail ile giriş hatası');
-            console.error('Gmail ile giriş hatası:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleKullaniciAdiKaydet = async () => {
-        const validationError = kullaniciAdiKontrolu(userName);
-        if (validationError) {
-            setHataMesaji(validationError);
-            return;
-        }
-
-        if (!cinsiyet) {
-            setHataMesaji('Cinsiyet zorunludur.');
-            return;
-        }
-
-        setIsLoading(true);
-        try {
-            const kullaniciRef = ref(db, `kullanicilar/${userID}`);
-            await set(kullaniciRef, {
-                userName: userName,
-                cinsiyet: cinsiyet,
-                bakiye: 0,
-                email: auth.currentUser.email,
-            });
-            setKullaniciAdiAlindi(true);
-            navigate('/', { state: { uid: userID } });
-            toast.success('Kullanıcı verileri kaydedildi.');
-        } catch (error) {
-            toast.error('Kullanıcı adı kaydetme hatası');
-            console.error('Kullanıcı adı kaydetme hatası:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const kullaniciAdiKontrolu = (userName) => {
-        if (!userName || userName.length < 3) {
-            return 'Kullanıcı adı 3 harften kısa olamaz.';
-        }
-        if (userName.includes('@') || /[!@#$%^&*(),.?":{}|<>]/g.test(userName)) {
-            return 'Kullanıcı adı özel karakter içeremez.';
-        }
-        return null; // Kullanıcı adı geçerli
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setHataMesaji('');
-        setIsLoading(true);
-
-        // Validate inputs
-        if (isSignup) {
-            const validationError = kullaniciAdiKontrolu(userName);
-            if (validationError) {
-                setHataMesaji(validationError);
-                setIsLoading(false);
-                return;
-            }
-
-            if (!cinsiyet) {
-                setHataMesaji('Cinsiyet zorunludur.');
-                setIsLoading(false);
-                return;
-            }
-        }
-
-        // Password validation
-        if (password.length < 6) {
-            setHataMesaji('Şifre en az 6 karakter olmalıdır.');
-            setIsLoading(false);
-            return;
-        }
-
-        try {
-            if (isSignup) {
-                // Kayıt işlemi
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-
-                const kullaniciRef = ref(db, `kullanicilar/${user.uid}`);
-                await set(kullaniciRef, {
-                    userName: userName,
-                    cinsiyet: cinsiyet,
-                    bakiye: 0,
-                    email: email,
-                });
-
-                await sendEmailVerification(user);
-                toast.success('Kayıt başarılı! Lütfen e-postanızı doğruladıktan sonra giriş yapın.');
+import React, { use } from 'react';
+import { createUserWithEmailAndPassword , getAuth , GoogleAuthProvider , signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../FirebaseConfig'; // Dışa aktarılan auth nesnesini kullanın
+import { useNavigate } from 'react-router-dom'
+import '../css/singup.css' // CSS dosyasını içe aktarın'
+import { FcGoogle } from "react-icons/fc";
+import { getDatabase, push, ref, set, update } from "firebase/database"
 
 
-            } 
-            
-            
-            
-            else {
-                // Giriş işlemi
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
 
-                if (user.emailVerified) {
-                    setUserID(user.uid);
-                    navigate('/', { state: { uid: user.uid } });
-                    toast.success('Giriş başarılı!');
-                } else {
-                    setHataMesaji('Lütfen e-posta adresinizi doğrulayın.');
-                }
-            }
-        } catch (error) {
-            let errorMessage = 'Bir hata oluştu. Lütfen tekrar deneyin.';
+function Singup() {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [userName, setUserName] = React.useState('');
+  const [cinsiyet, setCinsiyet] = React.useState(''); // Cinsiyet durumu
+  const [showUserandCinsiyet, setShowUserandCinsiyet] = React.useState(true); 
+  const [showUserandCinsiyet2, setShowUserandCinsiyet2] = React.useState(false);
+  const [admin, setAdmin] = React.useState(false); // Admin durumu
+  const [errorMessage, setErrorMessage] = React.useState(''); // Hata mesajları için state eklendi
 
-            switch (error.code) {
-                case 'auth/email-already-in-use':
-                    errorMessage = 'Bu e-posta zaten kullanımda.';
-                    break;
-                case 'auth/invalid-email':
-                    errorMessage = 'Geçersiz e-posta adresi.';
-                    break;
-                case 'auth/user-not-found':
-                    errorMessage = 'Kullanıcı bulunamadı. Kayıt olun.';
-                    break;
-                case 'auth/wrong-password':
-                    errorMessage = 'Yanlış şifre. Tekrar deneyin.';
-                    break;
-            }
 
-            setHataMesaji(errorMessage);
-            console.error(isSignup ? 'Kayıt hatası:' : 'Giriş hatası:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  const navigate = useNavigate();
+  const database = getDatabase();
 
-    return (
-        <div className='form-container'>
-            <div className='form'>
-                <h2>{isSignup ? 'Kayıt Ol' : 'Giriş Yap'}</h2>
-                {hataMesaji && <p className='error-message'>{hataMesaji}</p>}
-                
-                <form onSubmit={handleSubmit}>
-                    {isSignup && !gmailGirisYapildi && (
-                        <>
-                            <input 
-                                className='username' 
-                                type="text" 
-                                placeholder="Kullanıcı adı" 
-                                value={userName} 
-                                onChange={(e) => setUserName(e.target.value)} 
-                                required 
-                            />
-                            <div className='gender-select'>
-                                <label>Cinsiyet: </label>
-                                <select 
-                                    className='cins' 
-                                    value={cinsiyet} 
-                                    onChange={(e) => setCinsiyet(e.target.value)}
-                                    required
-                                >
-                                    <option value="">Seçiniz</option>
-                                    <option value="erkek">Erkek</option>
-                                    <option value="kadin">Kadın</option>
-                                    <option value="diger">Diğer</option>
-                                </select>
-                            </div>
-                        </>
-                    )}
+  const girsyap = () => {
+    setShowUserandCinsiyet(!showUserandCinsiyet); 
+    setErrorMessage(''); // Geçiş yaparken hata mesajını sıfırla
+  }
+  
 
-                    {!gmailGirisYapildi && (
-                        <>
-                            <input 
-                                type="email" 
-                                className='email' 
-                                placeholder="E-posta" 
-                                value={email} 
-                                onChange={(e) => setEmail(e.target.value)} 
-                                required 
-                            />
-                            <input 
-                                type="password" 
-                                className='password' 
-                                placeholder="Şifre" 
-                                value={password} 
-                                onChange={(e) => setPassword(e.target.value)} 
-                                required 
-                            />
-                            <button 
-                                className='kayit' 
-                                type="submit" 
-                                disabled={isLoading}
-                            >
-                                {isLoading ? 'İşlem Yapılıyor...' : (isSignup ? 'Kayıt Ol' : 'Giriş Yap')}
-                            </button>
-                        </>
-                    )}
-                </form>
 
-                <p 
-                    className='toggle-signup' 
-                    onClick={() => {
-                        setIsSignup(!isSignup);
-                        setGmailGirisYapildi(false);
-                        setHataMesaji('');
-                    }}
-                >
-                    {isSignup 
-                        ? 'Zaten hesabınız var mı? Giriş yapın' 
-                        : 'Hesabınız yok mu? Kayıt olun'}
-                </p>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Kayıt başarılı oldu
+      const user = userCredential.user;
+      const userId = user.uid; // Kullanıcı kimliği
+      console.log(user.uid); // Kullanıcı kimliğini konsola yazdır
+    
+      setEmail('')
+      setPassword('')
+      const kullaniciBilgileri = {
+        userName: userName,
+        userId: userId,}
 
-                <div className='gmail-login'>
-                    <h2>Gmail ile Giriş Yap</h2>
-                    {!gmailGirisYapildi ? (
-                        <button 
-                            onClick={handleGmailGiris} 
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'İşlem Yapılıyor...' : 'Gmail ile Giriş Yap'}
-                        </button>
-                    ) : !kullaniciAdiAlindi ? (
-                        <div>
-                            <input 
-                                type="text" 
-                                className='gmailusername'
-                                placeholder="Kullanıcı adı" 
-                                value={userName} 
-                                onChange={(e) => setUserName(e.target.value)} 
-                            />
-                            <div className='gender-select'>
-                                <label>Cinsiyet: </label>
-                                <select 
-                                    value={cinsiyet} 
-                                    onChange={(e) => setCinsiyet(e.target.value)}
-                                >
-                                    <option value="">Seçiniz</option>
-                                    <option value="erkek">Erkek</option>
-                                    <option value="kadin">Kadın</option>
-                                    <option value="diger">Diğer</option>
-                                </select>
-                            </div>
-                            <button 
-                                onClick={handleKullaniciAdiKaydet} 
-                                disabled={isLoading}
-                            >
-                                {isLoading ? 'Kaydediliyor...' : 'Kullanıcı Adını Kaydet'}
-                            </button>
-                        </div>
-                    ) : null}
-                </div>
-            </div>
-        </div>
-    );
-};
 
-export default SignupLogin;
+      navigate(`/` , { state: kullaniciBilgileri }); 
+       // Kullanıcı kimliğini duruma ayarla
+      console.log(userId); // Kullanıcı kimliğini konsola yazdır
+      veriYaz(userId) // Kullanıcı bilgilerini veritabanına yaz;
+
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error('Kayıt hatası:', errorCode, errorMessage);
+      setErrorMessage(translateError(errorCode)); // Hata mesajını çevir ve state'e ekle
+    }
+  };
+
+
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider(); // Google giriş sağlayıcısı oluştur
+    try {
+      const result = await signInWithPopup(auth, provider);
+      // Giriş başarılı oldu
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken;
+      const user = result.user;
+      console.log('Google ile giriş başarılı:', user.uid);
+      navigate('/'); // Başarılı giriş sonrası yönlendirme (isteğe bağlı)
+      
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      const email = error.customData?.email;
+      const credential = GoogleAuthProvider.credentialFromError(error);
+      console.error('Google ile giriş hatası:', errorCode, errorMessage, email, credential);
+      setErrorMessage(translateError(errorCode)); // Hata mesajını çevir ve state'e ekle
+    }
+  };
+
+
+  const veriYaz = (userId)=>{
+    const UserinfoRef = ref(database, 'users/' + userId);
+     
+    const userİnfo = {
+      userName: userName,
+      email: email,
+      cinsiyet: cinsiyet,
+      admin: admin,
+      uid:userId
+    }
+
+    set(UserinfoRef, userİnfo)
+  }
+
+  // Hata kodlarını çeviren yardımcı fonksiyon
+  const translateError = (errorCode) => {
+    let turkceHata = "Bir hata oluştu. Lütfen tekrar deneyin.";
+    
+    if (errorCode === "auth/invalid-email") {
+      turkceHata = "Geçersiz e-posta adresi.";
+    } else if (errorCode === "auth/user-disabled") {
+      turkceHata = "Bu kullanıcı hesabı devre dışı bırakılmıştır.";
+    } else if (errorCode === "auth/user-not-found") {
+      turkceHata = "Bu e-posta adresine ait bir kullanıcı bulunamadı.";
+    } else if (errorCode === "auth/wrong-password") {
+      turkceHata = "Hatalı şifre girdiniz.";
+    } else if (errorCode === "auth/too-many-requests") {
+      turkceHata = "Çok fazla hatalı giriş denemesi yaptınız. Lütfen daha sonra tekrar deneyin.";
+    } else if (errorCode === "auth/email-already-in-use") {
+      turkceHata = "Bu e-posta adresi zaten kullanımda.";
+    } else if (errorCode === "auth/weak-password") {
+      turkceHata = "Şifre çok zayıf. En az 6 karakter kullanın.";
+    }
+    
+    return turkceHata;
+  };
+
+  // Yeni giriş yapma işlevi - form submit handler
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage(''); // Her denemede hata mesajını temizle
+    
+    if (showUserandCinsiyet) {
+      // Kayıt olma işlemi
+      await handleSubmit(e);
+    } else {
+      // Giriş yapma işlemi
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        console.log("Giriş başarılı:", user);
+        
+        // Başarılı giriş sonrası yönlendirme
+        navigate('/', { state: { userId: user.uid } });
+        
+      } catch (error) {
+        const errorCode = error.code;
+        console.error("Giriş hatası:", errorCode, error.message);
+        setErrorMessage(translateError(errorCode));
+      }
+    }
+  };
+
+  return (
+    <div className="signup-container"> {/* Ana div için bir class */}
+      <form onSubmit={handleFormSubmit} className="signup-form"> {/* Form için bir class */}
+        <h2>{showUserandCinsiyet ? 'Kayıt Ol' : 'Giriş Yap'}</h2> {/* Başlık için class */}
+       {showUserandCinsiyet && <input
+          type="text"
+          placeholder="Kullanıcıadı"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          className="signup-input" // Kullanıcı adı input'u için class
+        />}
+       {showUserandCinsiyet && <select name="cinsiyet" id="" value={cinsiyet} onChange={(e)=>{setCinsiyet(e.target.value)}} className="signup-select"> {/* Select için class */}
+          <option value="" disabled selected>Cinsiyet Seçin</option>
+          <option value="Erkek">Erkek</option>
+          <option value="Kadın">Kadın</option>
+          <option value="Diğer">Diğer</option>
+        </select>}
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="signup-input" // Email input'u için class
+        />
+        <input
+          type="password"
+          placeholder="Şifre"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="signup-input" // Şifre input'u için class
+        />
+        
+        {/* Hata mesajını göster */}
+        {errorMessage && <p className="error-message" style={{ color: 'red' }}>{errorMessage}</p>}
+        
+        <button type="submit" className="signup-button">
+          {showUserandCinsiyet ? 'Kayıt ol' : 'Giriş yap'}
+        </button>
+        
+        <p className='giriskayit' onClick={girsyap}>
+          {showUserandCinsiyet 
+            ? 'Zaten hesabınız var mı? Giriş yapın' 
+            : 'Hesabınız yok mu? Kayıt olun'}
+        </p>
+        <button type="button" onClick={handleGoogleSignIn} className="google-button"><FcGoogle /></button>
+        <button type="button" onClick={()=>{navigate('/create-team')}} className='team-button'>Kulüp oluştur</button>
+         {/* Google butonu için class */}
+      </form>
+    </div>
+  );
+}
+
+export default Singup;
