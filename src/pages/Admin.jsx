@@ -155,7 +155,7 @@ function Admin() {
     const yeni = islem === 'ekle' ? mevcut + miktar : Math.max(mevcut - miktar, 0);
     await update(calisanRef, { bakiye: yeni });
     setBakiyeModalAcik(false);
-    setYeniBakiye('')
+    setYeniBakiye(0)
     fetchEmployees(selectedShop.id);
   };
 
