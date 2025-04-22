@@ -12,6 +12,9 @@ function Admin() {
   const [userUid, setUserUid] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
   const [employees, setEmployees] = useState([]);
+  const [bakiyeModalAcik, setBakiyeModalAcik] = useState(false);
+  const [secilenCalisanId, setSecilenCalisanId] = useState(null);
+  const [yeniBakiye, setYeniBakiye] = useState(0);
 
 
   // Kullanıcı kontrolü
@@ -31,12 +34,13 @@ function Admin() {
     try {
       const employeesRef = ref(database, `worksName/${shopId}/employees`);
       const snapshot = await get(employeesRef);
-      
+
       if (snapshot.exists()) {
         const employeesData = snapshot.val();
         const employeeList = Object.keys(employeesData).map(empId => ({
           id: empId,
-          ...employeesData[empId]
+          ...employeesData[empId],
+          bakiye: employeesData[empId].bakiye || 0 // Eğer bakiye yoksa 0 ata
         }));
         setEmployees(employeeList);
       } else {
@@ -47,6 +51,11 @@ function Admin() {
     }
   };
 
+  const handleBakiyeDegistirTikla = (calisanId) => {
+    setSecilenCalisanId(calisanId);
+    setBakiyeModalAcik(true);
+    setYeniBakiye(employees.find(emp => emp.id === calisanId)?.bakiye || 0); // Mevcut bakiyeyi modal inputuna yaz
+  };
   // Kullanıcının admin olup olmadığını kontrol et
   const checkIfAdmin = async (uid) => {
     try {
@@ -298,34 +307,50 @@ const handleShopChange = (shop) => {
         <p className="no-shops">Yönetici olduğunuz bir dükkan bulunamadı.</p>
       )}
 
-<div className="employees-list">
-  <h3>{selectedShop.name} - Çalışanlar</h3>
-  {employees.length > 0 ? (
-    <table>
-      <thead>
-        <tr>
-          <th>İsim</th>
-          <th>E-posta</th>
-          <th>Rol</th>
-          <th>Katılım Tarihi</th>
-        </tr>
-      </thead>
-      <tbody>
-        {employees.map(emp => (
-          <tr key={emp.id}>
-            <td>{emp.name}</td>
-            <td>{emp.email}</td>
-            <td>{emp.role}</td>
-            <td>{formatDate(emp.joinDate)}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  ) : (
-    <p className="no-employees">Henüz çalışan yok.</p>
-  )}
-</div>
 
+<div className="employees-list">
+        <h3>{selectedShop?.name} - Çalışanlar</h3>
+        {employees.length > 0 ? (
+          <table>
+            <thead>
+              <tr>
+                <th>İsim</th>
+                <th>E-posta</th>
+                <th>Bakiye</th>
+                <th>İşlemler</th>
+              </tr>
+            </thead>
+            <tbody>
+              {employees.map(emp => (
+                <tr key={emp.id}>
+                  <td>{emp.name}</td>
+                  <td>{emp.email}</td>
+                  <td>{emp.bakiye}</td>
+                  <td>
+                    <button onClick={() => handleBakiyeDegistirTikla(emp.id)}>Bakiye Değiştir</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="no-employees">Henüz çalışan yok.</p>
+        )}
+      </div>
+
+      {bakiyeModalAcik && (
+        <div className="bakiye-modal"> {/* CSS ile stilendirilecek */}
+          <h3>Bakiye Değiştir</h3>
+          <input
+            type="number"
+            value={yeniBakiye}
+            onChange={(e) => setYeniBakiye(parseFloat(e.target.value) || 0)}
+          />
+          <button onClick={() => guncelleCalisanBakiye(secilenCalisanId, yeniBakiye, 'ekle')}>Ekle</button>
+          <button onClick={() => guncelleCalisanBakiye(secilenCalisanId, yeniBakiye, 'azalt')}>Azalt</button>
+          <button onClick={() => setBakiyeModalAcik(false)}>Kapat</button>
+        </div>
+      )}
     </div>
   );
 }
