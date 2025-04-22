@@ -155,7 +155,6 @@ function Admin() {
     const yeni = islem === 'ekle' ? mevcut + miktar : Math.max(mevcut - miktar, 0);
     await update(calisanRef, { bakiye: yeni });
     setBakiyeModalAcik(false);
-    setYeniBakiye('')
     fetchEmployees(selectedShop.id);
   };
 
@@ -234,7 +233,7 @@ function Admin() {
       {bakiyeModalAcik && (
         <div className="bakiye-modal">
           <h3>Bakiye Değiştir</h3>
-          <input type="number" value={yeniBakiye} onChange={(e) => setYeniBakiye(parseFloat(e.target.value))} />
+          <input type="number" value={yeniBakiye} onChange={(e) => setYeniBakiye(parseFloat(e.target.value) || 0)} />
           <button onClick={() => guncelleCalisanBakiye(secilenCalisanId, yeniBakiye, 'ekle')}>Ekle</button>
           <button onClick={() => guncelleCalisanBakiye(secilenCalisanId, yeniBakiye, 'azalt')}>Azalt</button>
           <button onClick={() => setBakiyeModalAcik(false)}>Kapat</button>
